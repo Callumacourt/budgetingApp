@@ -1,4 +1,3 @@
- 
 # ---------- BUDGET MANAGEMENT ----------
 
 class BudgetManager:
@@ -15,11 +14,13 @@ class BudgetManager:
     def decreaseBudget(self, amount):
         self.budget -= amount
 
- # ---------- EXPENSE MANAGEMENT ----------
+
+# ---------- EXPENSE MANAGEMENT ----------
 
 class ExpenseManager:
-    def __init__(self):
+    def __init__(self, categoryManager):
         self.expense_list = {}
+        self.categoryManager = categoryManager
 
     def addExpense(self, topic, amount, category):
         if topic in self.expense_list:
@@ -27,6 +28,7 @@ class ExpenseManager:
         else:
             # Add the expense to the expense_list
             self.expense_list[topic] = {'amount': amount, 'category': category}
+            self.categoryManager.addCategory(category)
 
     def adjustExpense(self, topic, amount, category):
         # Raise error if topic isn't contained in expenses
@@ -38,7 +40,7 @@ class ExpenseManager:
         # Set the amount of the expense
         else:
             # Update the amount in the existing dictionary
-            self.expense_list[topic]['amount'] = amount  # Corrected this line
+            self.expense_list[topic]['amount'] = amount
 
     def removeExpense(self, topic):
         if topic in self.expense_list:
@@ -50,7 +52,7 @@ class ExpenseManager:
     def getTotalExpenses(self):
         return sum(expense['amount'] for expense in self.expense_list.values())
 
-    
+
 # ---------- CATEGORY MANAGEMENT ----------
 
 class CategoryManager:
@@ -60,7 +62,8 @@ class CategoryManager:
     def addCategory(self, category):
         if category in self.categories:
             raise ValueError("Category already exists")
-        else: self.categories[category] = []
+        else:
+            self.categories[category] = []
 
     def addExpenseToCategory(self, topic, amount, category):
         if category not in self.categories:
@@ -69,12 +72,12 @@ class CategoryManager:
             self.categories[category].append({'topic': topic, 'amount': amount})
 
 
- # ---------- WHOLE FILE MANAGEMENT ----------
+# ---------- WHOLE FILE MANAGEMENT ----------
 
 class ExpenseHandler:
     def __init__(self):
         self.budgetManager = BudgetManager()
-        self.expenseManager = ExpenseManager()
         self.categoryManager = CategoryManager()
+        self.expenseManager = ExpenseManager(self.categoryManager)
 
 manager = ExpenseHandler()

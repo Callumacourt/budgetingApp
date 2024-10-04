@@ -1,5 +1,5 @@
 import unittest
-from expense import ExpenseHandler, BudgetManager, CategoryManager  # Import the necessary classes from your main module
+from expense import ExpenseHandler, BudgetManager, CategoryManager
 
 class TestExpenseHandler(unittest.TestCase):
 
@@ -7,12 +7,15 @@ class TestExpenseHandler(unittest.TestCase):
         """Set up a new instance of ExpenseHandler for each test"""
         self.manager = ExpenseHandler()  # Initialize the main manager
 
-    def testCategoryAdder(self):
-        """Test adding categories to expenses and vice versa"""
-        self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
-        self.assertEqual(self.manager.expenseManager.getExpenses()['Rent']['amount'], 1000)
+    # ---------- CATEGORY TESTING ----------
 
-    # ---------- EXPENSE TESTS ----------
+    def testReturnCategories(self):
+        """Tests returning category list"""
+        self.manager.categoryManager.addCategory('Bills')
+        self.assertEqual(self.manager.categoryManager.categories, {'Bills': []})
+
+
+    # ---------- EXPENSE TESTING ----------
 
     def testAddExpense(self):
         """Test adding an expense"""
@@ -25,6 +28,7 @@ class TestExpenseHandler(unittest.TestCase):
         self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
         self.manager.expenseManager.adjustExpense('Rent', 500, 'Bills')
         self.assertEqual(self.manager.expenseManager.getExpenses()['Rent']['amount'], 500)
+        self.assertEqual(self.manager.expenseManager.getExpenses()['Rent']['category'], 'Bills')
 
     def testRemoveExpense(self):
         """Test removing an expense"""
@@ -37,6 +41,9 @@ class TestExpenseHandler(unittest.TestCase):
         self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
         expectedExpense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
         self.assertEqual(self.manager.expenseManager.getExpenses(), expectedExpense)
+
+    
+    # ---------- BUDGET TESTING ----------
 
     def testBudget(self):
         """Test setting a budget"""
@@ -59,8 +66,9 @@ class TestExpenseHandler(unittest.TestCase):
         """Test calculating budget - expenses"""
         self.manager.budgetManager.setBudget(1000)
         self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
-        total_remaining = self.manager.budgetManager.budget - sum(e['amount'] for e in self.manager.expenseManager.getExpenses().values())
+        total_remaining = self.manager.budgetManager.budget - self.manager.expenseManager.getTotalExpenses()
         self.assertEqual(total_remaining, 0)
+
 
 if __name__ == '__main__':
     unittest.main()  # This allows you to run the tests directly
