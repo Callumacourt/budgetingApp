@@ -1,5 +1,5 @@
 import unittest
-from expense import ExpenseHandler, BudgetManager, CategoryManager
+from handler import ExpenseHandler
 
 class TestExpenseHandler(unittest.TestCase):
 
@@ -15,6 +15,7 @@ class TestExpenseHandler(unittest.TestCase):
         self.assertEqual(self.manager.categoryManager._categories, {'Bills': []})
 
     def test_task_category(self):
+        """Tests adding an expense to a category"""
         self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
         self.assertEqual(self.manager.categoryManager._categories, {'Bills': [{'amount': 1000, 'topic': 'Rent'}]})
 
@@ -45,7 +46,6 @@ class TestExpenseHandler(unittest.TestCase):
         expected_expense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
         self.assertEqual(self.manager.expenseManager.get_expenses(), expected_expense)
 
-    
     # ---------- BUDGET TESTING ----------
 
     def test_budget(self):
@@ -74,4 +74,4 @@ class TestExpenseHandler(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()  
+    unittest.main()
