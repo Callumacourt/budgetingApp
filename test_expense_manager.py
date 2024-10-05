@@ -9,66 +9,69 @@ class TestExpenseHandler(unittest.TestCase):
 
     # ---------- CATEGORY TESTING ----------
 
-    def testReturnCategories(self):
+    def test_return_categories(self):
         """Tests returning category list"""
-        self.manager.categoryManager.addCategory('Bills')
-        self.assertEqual(self.manager.categoryManager.categories, {'Bills': []})
+        self.manager.categoryManager.add_category('Bills')
+        self.assertEqual(self.manager.categoryManager._categories, {'Bills': []})
 
+    def test_task_category(self):
+        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        self.assertEqual(self.manager.categoryManager._categories, {'Bills': [{'amount': 1000, 'topic': 'Rent'}]})
 
     # ---------- EXPENSE TESTING ----------
 
-    def testAddExpense(self):
+    def test_add_expense(self):
         """Test adding an expense"""
-        self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
-        expectedExpense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
-        self.assertEqual(self.manager.expenseManager.getExpenses(), expectedExpense)
+        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        expected_expense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
+        self.assertEqual(self.manager.expenseManager.get_expenses(), expected_expense)
 
-    def testAdjustExpense(self):
+    def test_adjust_expense(self):
         """Test adjusting an expense"""
-        self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
-        self.manager.expenseManager.adjustExpense('Rent', 500, 'Bills')
-        self.assertEqual(self.manager.expenseManager.getExpenses()['Rent']['amount'], 500)
-        self.assertEqual(self.manager.expenseManager.getExpenses()['Rent']['category'], 'Bills')
+        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        self.manager.expenseManager.adjust_expense('Rent', 500, 'Bills')
+        self.assertEqual(self.manager.expenseManager.get_expenses()['Rent']['amount'], 500)
+        self.assertEqual(self.manager.expenseManager.get_expenses()['Rent']['category'], 'Bills')
 
-    def testRemoveExpense(self):
+    def test_remove_expense(self):
         """Test removing an expense"""
-        self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')  # Add before removing
-        self.manager.expenseManager.removeExpense("Rent")
-        self.assertNotIn("Rent", self.manager.expenseManager.getExpenses())
+        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')  # Add before removing
+        self.manager.expenseManager.remove_expense("Rent")
+        self.assertNotIn("Rent", self.manager.expenseManager.get_expenses())
 
-    def testGetExpenses(self):
+    def test_get_expenses(self):
         """Test returning the expenses"""
-        self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
-        expectedExpense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
-        self.assertEqual(self.manager.expenseManager.getExpenses(), expectedExpense)
+        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        expected_expense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
+        self.assertEqual(self.manager.expenseManager.get_expenses(), expected_expense)
 
     
     # ---------- BUDGET TESTING ----------
 
-    def testBudget(self):
+    def test_budget(self):
         """Test setting a budget"""
-        self.manager.budgetManager.setBudget(1000)
-        self.assertEqual(self.manager.budgetManager.budget, 1000)
+        self.manager.budgetManager.set_budget(1000)
+        self.assertEqual(self.manager.budgetManager.get_budget(), 1000)
 
-    def testIncreaseBudget(self):
+    def test_increase_budget(self):
         """Test adding to the budget"""
-        self.manager.budgetManager.setBudget(1000)
-        self.manager.budgetManager.addToBudget(1000)
-        self.assertEqual(self.manager.budgetManager.budget, 2000)
+        self.manager.budgetManager.set_budget(1000)
+        self.manager.budgetManager.add_to_budget(1000)
+        self.assertEqual(self.manager.budgetManager.get_budget(), 2000)
 
-    def testDecreaseBudget(self):
+    def test_decrease_budget(self):
         """Test decreasing the budget"""
-        self.manager.budgetManager.setBudget(1000)
-        self.manager.budgetManager.decreaseBudget(500)
-        self.assertEqual(self.manager.budgetManager.budget, 500)
+        self.manager.budgetManager.set_budget(1000)
+        self.manager.budgetManager.decrease_budget(500)
+        self.assertEqual(self.manager.budgetManager.get_budget(), 500)
 
-    def testTotal(self):
+    def test_total(self):
         """Test calculating budget - expenses"""
-        self.manager.budgetManager.setBudget(1000)
-        self.manager.expenseManager.addExpense('Rent', 1000, 'Bills')
-        total_remaining = self.manager.budgetManager.budget - self.manager.expenseManager.getTotalExpenses()
+        self.manager.budgetManager.set_budget(1000)
+        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        total_remaining = self.manager.budgetManager.get_budget() - self.manager.expenseManager.get_total_expenses()
         self.assertEqual(total_remaining, 0)
 
 
 if __name__ == '__main__':
-    unittest.main()  # This allows you to run the tests directly
+    unittest.main()  
