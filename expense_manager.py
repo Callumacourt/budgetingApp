@@ -1,24 +1,18 @@
-# expense_manager.py
-
-from category_manager import CategoryManager
-
 class ExpenseManager:
     """
     Manages expenses by adding, adjusting, and removing expenses, and categorizing them.
     Links expenses to their respective categories.
     """
-    def __init__(self, category_manager: CategoryManager) -> None:
+    def __init__(self) -> None:
         self._expense_list = {}  # Holds expenses with details of amount and category
-        self._category_manager = category_manager
 
     def add_expense(self, topic: str, amount: float, category: str) -> None:
         """Adds a new expense to both the expense list and category."""
         if topic in self._expense_list:
             raise KeyError('Topic already in expenses')  # Avoid duplicate expenses
-
-        # Add the expense to the list and update the category manager
+        # Add the expense to the list 
         self._expense_list[topic] = {'amount': amount, 'category': category}
-        self._category_manager.add_expense_to_category(topic, amount, category)
+   
 
     def adjust_expense(self, topic: str, amount: float, category: str) -> None:
         """

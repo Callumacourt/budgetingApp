@@ -12,37 +12,37 @@ class TestExpenseHandler(unittest.TestCase):
     def test_return_categories(self):
         """Tests returning category list"""
         self.manager.categoryManager.add_category('Bills')
-        self.assertEqual(self.manager.categoryManager._categories, {'Bills': []})
+        self.assertEqual(self.manager.categoryManager.get_categories(), {'Bills': []})
 
     def test_task_category(self):
         """Tests adding an expense to a category"""
-        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
-        self.assertEqual(self.manager.categoryManager._categories, {'Bills': [{'amount': 1000, 'topic': 'Rent'}]})
+        self.manager.add_expense('Rent', 1000, 'Bills')
+        self.assertEqual(self.manager.categoryManager.get_categories(), {'Bills': [{'amount': 1000, 'topic': 'Rent'}]})
 
     # ---------- EXPENSE TESTING ----------
 
     def test_add_expense(self):
         """Test adding an expense"""
-        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        self.manager.add_expense('Rent', 1000, 'Bills')
         expected_expense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
         self.assertEqual(self.manager.expenseManager.get_expenses(), expected_expense)
 
     def test_adjust_expense(self):
         """Test adjusting an expense"""
-        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
-        self.manager.expenseManager.adjust_expense('Rent', 500, 'Bills')
+        self.manager.add_expense('Rent', 1000, 'Bills')
+        self.manager.adjust_expense('Rent', 500, 'Bills')
         self.assertEqual(self.manager.expenseManager.get_expenses()['Rent']['amount'], 500)
         self.assertEqual(self.manager.expenseManager.get_expenses()['Rent']['category'], 'Bills')
 
     def test_remove_expense(self):
         """Test removing an expense"""
-        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')  # Add before removing
-        self.manager.expenseManager.remove_expense("Rent")
+        self.manager.add_expense('Rent', 1000, 'Bills')  # Add before removing
+        self.manager.remove_expense("Rent")
         self.assertNotIn("Rent", self.manager.expenseManager.get_expenses())
 
     def test_get_expenses(self):
         """Test returning the expenses"""
-        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        self.manager.add_expense('Rent', 1000, 'Bills')
         expected_expense = {'Rent': {'amount': 1000, 'category': 'Bills'}}
         self.assertEqual(self.manager.expenseManager.get_expenses(), expected_expense)
 
@@ -68,7 +68,7 @@ class TestExpenseHandler(unittest.TestCase):
     def test_total(self):
         """Test calculating budget - expenses"""
         self.manager.budgetManager.set_budget(1000)
-        self.manager.expenseManager.add_expense('Rent', 1000, 'Bills')
+        self.manager.add_expense('Rent', 1000, 'Bills')
         total_remaining = self.manager.budgetManager.get_budget() - self.manager.expenseManager.get_total_expenses()
         self.assertEqual(total_remaining, 0)
 

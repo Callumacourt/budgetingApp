@@ -18,3 +18,6 @@ class CategoryManager:
             self.add_category(category)  # Automatically create the category if it's missing
         # Add the expense to the correct category
         self._categories[category].append({'topic': topic, 'amount': amount})
+
+    def get_categories(self) -> dict:
+        return self._categories 
