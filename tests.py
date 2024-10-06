@@ -53,24 +53,34 @@ class TestExpenseHandler(unittest.TestCase):
         self.manager.budgetManager.set_budget(1000)
         self.assertEqual(self.manager.budgetManager.get_budget(), 1000)
 
-    def test_increase_budget(self):
-        """Test adding to the budget"""
-        self.manager.budgetManager.set_budget(1000)
-        self.manager.budgetManager.add_to_budget(1000)
-        self.assertEqual(self.manager.budgetManager.get_budget(), 2000)
-
-    def test_decrease_budget(self):
-        """Test decreasing the budget"""
-        self.manager.budgetManager.set_budget(1000)
-        self.manager.budgetManager.decrease_budget(500)
-        self.assertEqual(self.manager.budgetManager.get_budget(), 500)
-
     def test_total(self):
         """Test calculating budget - expenses"""
         self.manager.budgetManager.set_budget(1000)
         self.manager.add_expense('Rent', 1000, 'Bills')
-        total_remaining = self.manager.budgetManager.get_budget() - self.manager.expenseManager.get_total_expenses()
+        total_remaining = self.manager.budgetManager.get_budget()
         self.assertEqual(total_remaining, 0)
+
+    def test_budget_adjust(self):
+        """Test adjustment of budget when expense is modified."""
+        # Set an initial budget
+        self.manager.budgetManager.set_budget(1000)
+        self.manager.add_expense('Rent', 500, 'Bills')
+
+        # The budget should now reflect the expense
+        self.assertEqual(self.manager.budgetManager.get_budget(), 500)  # 1000 - 500 = 500
+
+        # Adjust the expense to a higher value
+        self.manager.adjust_expense('Rent', 700, 'Bills')  # Adjusting to a higher amount (700)
+
+        # The budget should reflect the additional decrease
+        self.assertEqual(self.manager.budgetManager.get_budget(), 500 - 200)  # 500 - (700 - 500) = 300
+
+        # Adjust the expense to a lower value
+        self.manager.adjust_expense('Rent', 300, 'Bills')  # Adjusting to a lower amount (300)
+
+        # The budget should now reflect the increase
+        self.assertEqual(self.manager.budgetManager.get_budget(), 300 + 400)  # 300 + (500 - 300) = 700
+
 
 
 if __name__ == '__main__':

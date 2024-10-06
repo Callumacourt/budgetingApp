@@ -9,13 +9,14 @@ class BudgetManager:
         """Sets the total available budget."""
         self._budget = amount
 
-    def add_to_budget(self, amount: float) -> None:
-        """Increases the budget by a specified amount."""
-        self._budget += amount
-
-    def decrease_budget(self, amount: float) -> None:
-        """Decreases the budget by a specified amount."""
-        self._budget -= amount
+    def adjust_budget(self, sign: str, amount: float) -> None:
+        """Adjusts the budget by a specified amount. Positive to increase, negative to decrease."""
+        if sign == '-':
+            self._budget -= amount
+        elif sign == '+':
+            self._budget += amount
+        else:
+            raise KeyError('Invalid sign')
 
     def get_budget(self) -> float:
         """Returns the current available budget."""
