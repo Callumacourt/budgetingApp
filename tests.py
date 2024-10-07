@@ -50,36 +50,44 @@ class TestExpenseHandler(unittest.TestCase):
 
     def test_budget(self):
         """Test setting a budget"""
-        self.manager.budgetManager.set_budget(1000)
-        self.assertEqual(self.manager.budgetManager.get_budget(), 1000)
+        self.manager.budgetManager.set_budget('January', 1000)
+        self.assertEqual(self.manager.budgetManager.get_budget('January'), 1000)
+
 
     def test_total(self):
         """Test calculating budget - expenses"""
-        self.manager.budgetManager.set_budget(1000)
+        self.manager.budgetManager.set_budget('January', 1000)
         self.manager.add_expense('Rent', 1000, 'Bills')
-        total_remaining = self.manager.budgetManager.get_budget()
+        total_remaining = self.manager.budgetManager.get_budget('January')
         self.assertEqual(total_remaining, 0)
 
     def test_budget_adjust(self):
         """Test adjustment of budget when expense is modified."""
         # Set an initial budget
-        self.manager.budgetManager.set_budget(1000)
+        self.manager.budgetManager.set_budget('January', 1000)
         self.manager.add_expense('Rent', 500, 'Bills')
 
         # The budget should now reflect the expense
-        self.assertEqual(self.manager.budgetManager.get_budget(), 500)  # 1000 - 500 = 500
+        self.assertEqual(self.manager.budgetManager.get_budget('January'), 500)  # 1000 - 500 = 500
 
         # Adjust the expense to a higher value
         self.manager.adjust_expense('Rent', 700, 'Bills')  # Adjusting to a higher amount (700)
 
         # The budget should reflect the additional decrease
-        self.assertEqual(self.manager.budgetManager.get_budget(), 500 - 200)  # 500 - (700 - 500) = 300
+        self.assertEqual(self.manager.budgetManager.get_budget('January'), 500 - 200)  # 500 - (700 - 500) = 300
 
         # Adjust the expense to a lower value
         self.manager.adjust_expense('Rent', 300, 'Bills')  # Adjusting to a lower amount (300)
 
         # The budget should now reflect the increase
-        self.assertEqual(self.manager.budgetManager.get_budget(), 300 + 400)  # 300 + (500 - 300) = 700
+        self.assertEqual(self.manager.budgetManager.get_budget('January'), 300 + 400)  # 300 + (500 - 300) = 700
+
+        # Test that this still works when current budget switched
+        self.manager.budgetManager.set_budget('Feburary', 1000)
+        self.manager.budgetManager.set_active_budget('Feburary')
+        self.manager.add_expense('More rent', 500, 'Bills')
+        self.assertEqual(self.manager.budgetManager.get_budget('Feburary'), 500) 
+
 
 
 
